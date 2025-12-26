@@ -29,14 +29,24 @@ router.register(r'activities', views.ActivityViewSet)
 router.register(r'workouts', views.WorkoutViewSet)
 router.register(r'leaderboard', views.LeaderboardViewSet)
 
+
+import os
+from urllib.parse import urljoin
+
 @api_view(['GET'])
 def api_root(request, format=None):
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    if codespace_name:
+        base_url = f"https://{codespace_name}-8000.app.github.dev/"
+    else:
+        base_url = request.build_absolute_uri('/')
+    api_base = urljoin(base_url, 'api/')
     return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'teams': reverse('team-list', request=request, format=format),
-        'activities': reverse('activity-list', request=request, format=format),
-        'workouts': reverse('workout-list', request=request, format=format),
-        'leaderboard': reverse('leaderboard-list', request=request, format=format),
+        'users': urljoin(api_base, 'users/'),
+        'teams': urljoin(api_base, 'teams/'),
+        'activities': urljoin(api_base, 'activities/'),
+        'workouts': urljoin(api_base, 'workouts/'),
+        'leaderboard': urljoin(api_base, 'leaderboard/'),
     })
 
 urlpatterns = [
