@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 
 const Teams = () => {
   const [teams, setTeams] = useState([]);
@@ -17,15 +16,31 @@ const Teams = () => {
   }, [endpoint]);
 
   return (
-    <div className="container mt-4">
-      <h2>Teams</h2>
-      <ul className="list-group">
-        {teams.map((team, idx) => (
-          <li key={team.id || idx} className="list-group-item">
-            {JSON.stringify(team)}
-          </li>
-        ))}
-      </ul>
+    <div className="card shadow-sm mb-4">
+      <div className="card-body">
+        <h2 className="card-title mb-4 text-info">Teams</h2>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover align-middle">
+            <thead className="table-dark">
+              <tr>
+                {teams.length > 0 && Object.keys(teams[0]).map((key) => (
+                  <th key={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {teams.map((team, idx) => (
+                <tr key={team.id || idx}>
+                  {Object.values(team).map((val, i) => (
+                    <td key={i}>{typeof val === 'object' ? JSON.stringify(val) : val}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {teams.length === 0 && <div className="alert alert-info">No teams found.</div>}
+        </div>
+      </div>
     </div>
   );
 };
